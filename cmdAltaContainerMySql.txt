@@ -1,0 +1,8 @@
+$ docker pull mysql:5.7
+
+// En windows 
+// Con puro docker  
+$ docker run -d --name bdEjemplo01 -p 3306:3306 \
+   -v "C:\qtx\MisDocumentos\2022\DiplomadoArquitecturaBancoAzteca\modulo5\pruebaAltaContenedorMySql\bd\datos":"/var/lib/mysql" \
+   -e MYSQL_ROOT_PASSWORD=root \
+   -e MYSQL_DATABASE=restBD mysql:5.7
