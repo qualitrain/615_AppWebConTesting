@@ -2,6 +2,9 @@ package org.qtx.entidades;
 
 import java.util.Objects;
 
+import javax.json.Json;
+import javax.json.JsonObject;
+import javax.json.JsonObjectBuilder;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
@@ -103,6 +106,14 @@ public class ModeloAuto {
 		return Objects.equals(armadora.getClave(), other.armadora.getClave()) && Objects.equals(claveModelo, other.claveModelo)
 				&& importado == other.importado && Objects.equals(nombre, other.nombre)
 				&& Objects.equals(version, other.version);
+	}
+	public JsonObject toJson() {
+		JsonObjectBuilder builderModeloAuto = Json.createObjectBuilder();
+		return builderModeloAuto.add("claveModelo", this.claveModelo)
+		                        .add("nombre", this.nombre)
+		                        .add("version", this.version)
+		                        .add("importado", this.importado)
+		                        .build();
 	}
 	
 }

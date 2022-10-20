@@ -2,6 +2,9 @@ package org.qtx.entidades;
 
 import java.util.Set;
 
+import javax.json.Json;
+import javax.json.JsonArrayBuilder;
+import javax.json.JsonObject;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -153,4 +156,22 @@ public class Armadora {
 			return false;
 		return true;
 	}
+	public JsonObject toJson() {
+		JsonArrayBuilder builderArrModelos = Json.createArrayBuilder();
+		if(this.modelos != null) {
+			for(ModeloAuto modeloI : this.modelos) {
+				builderArrModelos.add(modeloI.toJson());
+			}
+		}
+		
+		return Json.createObjectBuilder()
+				       .add("clave", this.clave)
+		               .add("nombre", this.nombre)
+		               .add("paisOrigen", this.paisOrigen)
+		               .add("nPlantas", this.nPlantas)
+				       .add("modelos", builderArrModelos.build())
+			           .build();
+		
+	}
+	
 }

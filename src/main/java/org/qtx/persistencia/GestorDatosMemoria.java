@@ -15,7 +15,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Repository;
 
-//@Primary
+@Primary
 @Repository
 public class GestorDatosMemoria implements IGestorDatos{
 	private Map<String,Armadora> armadoras;
