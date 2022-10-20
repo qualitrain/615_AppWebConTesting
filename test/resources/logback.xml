@@ -5,4 +5,5 @@
     <logger name="org.hibernate.SQL" level="WARN" />
     <logger name="org.qtx.persistencia" level="INFO"/>
     <logger name="org.qtx.servicios" level="INFO"/>
+    <logger name="org.qtx.web" level="INFO"/>
 </configuration>
