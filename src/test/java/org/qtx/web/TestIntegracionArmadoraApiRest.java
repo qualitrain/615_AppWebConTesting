@@ -45,7 +45,7 @@ class TestIntegracionArmadoraApiRest {
 	}
 
 	public TestIntegracionArmadoraApiRest() {
-		bitacora.info("TestArmadoraApiRest()");
+		bitacora.info("TestIntegracionArmadoraApiRest()");
 	}
 	
 	@Test
@@ -185,12 +185,12 @@ class TestIntegracionArmadoraApiRest {
 				
 	}
 
-	@Test
+//	@Test
 	void testGetModelosXarmadora() {
 		fail("Not yet implemented");
 	}
 
-	@Test
+//	@Test
 	void testGetArmadorasXml() {
 		fail("Not yet implemented");
 	}
@@ -231,7 +231,8 @@ class TestIntegracionArmadoraApiRest {
 		assertThat(cadArmadora).isNotBlank()
 		                       .contains(idArmadora)
 		                       .contains(nombre)
-		                       .contains(paisOrigen);
+		                       .contains(paisOrigen)
+		                       .doesNotContain("Error");
 		
 		bitacora.info("testInsertarArmadora_OK_FORM_URLENCODED: cadArmadora = " + cadArmadora);
 		
@@ -272,17 +273,18 @@ class TestIntegracionArmadoraApiRest {
 		assertThat(cadArmadora).isNotBlank()
 		                       .contains(idArmadora)
 		                       .contains(nombre)
-		                       .contains(paisOrigen);
+		                       .contains(paisOrigen)
+		                       .doesNotContain("Error");
 		
 		bitacora.info("testInsertarArmadora_Json_OK: cadArmadora = " + cadArmadora);
 	}
 
-	@Test
+//	@Test
 	void testActualizarArmadora_Json() {
 		fail("Not yet implemented");
 	}
 
-	@Test
+//	@Test
 	void testGetArmadorasHateoas() {
 		fail("Not yet implemented");
 	}
