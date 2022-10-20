@@ -8,6 +8,8 @@ import java.util.Set;
 import org.qtx.entidades.Armadora;
 import org.qtx.entidades.ModeloAuto;
 import org.qtx.servicios.IGestorDatos;
+import org.qtx.servicios.ManejadorErrPersistencia;
+import org.qtx.servicios.PersistenciaException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Primary;
@@ -31,9 +33,16 @@ public class GestorDatosMemoria implements IGestorDatos{
 	
 	@Override
 	public Armadora getArmadoraXID(String cveArmadora) {
-		bitacora.info("getArmadoraXID(" +  cveArmadora +")");
+		bitacora.debug("getArmadoraXID(" +  cveArmadora +")");
 		
 		return this.armadoras.get(cveArmadora);
+	}
+	
+	@Override
+	public ModeloAuto getModeloAutoXID(String cveModelo) {
+		bitacora.debug("getModeloAutoXID(" +  cveModelo +")");
+		
+		return this.autos.get(cveModelo);
 	}
 
 	@Override
@@ -45,12 +54,22 @@ public class GestorDatosMemoria implements IGestorDatos{
 	public Map<String, Armadora> getMapaArmadoras() {
 		return this.armadoras;
 	}
- 
+
 	@Override
 	public Armadora insertarArmadora(Armadora armadora) {
-		bitacora.info("insertarArmadora(" +  armadora +")");
-		if(this.armadoras.containsKey(armadora.getClave()) )
-			return null;
+		bitacora.debug("insertarArmadora(" +  armadora +")");
+		if(this.armadoras.containsKey(armadora.getClave()) ) {
+			Map<String,String> detEx = new HashMap<String, String>();
+			detEx.put("msg", "Llave duplicada [" + this.armadoras.get(armadora.getClave())
+					+ "] al intentar insertar armadora ");
+			detEx.put("tabla", "armadora en memoria");
+			detEx.put("ubicacion", this.getClass().getSimpleName() 
+					+ ".insertarArmadora("
+					+ armadora
+					+ ")");
+			PersistenciaException pex = ManejadorErrPersistencia.crearEx(detEx, null);
+			throw pex;			
+		}
 		this.armadoras.put(armadora.getClave(), armadora);
 		armadora.setModelos(new HashSet<>());
 		return armadora;
@@ -106,8 +125,6 @@ public class GestorDatosMemoria implements IGestorDatos{
 		modelo = new ModeloAuto("X3", "Serie 3 SUV", nvaArmadora, "Luxe", true);
 		this.insertarModeloAuto(modelo);
 		
-		nvaArmadora = new Armadora("Renault", "Groupe Renault", "Francia", 0);
-		this.insertarArmadora(nvaArmadora);
 	}
 
 	@Override
@@ -120,7 +137,7 @@ public class GestorDatosMemoria implements IGestorDatos{
 
 	@Override
 	public Armadora getArmadoraConModelosXID(String cveArmadora) {
-		bitacora.info("getArmadoraXID(" +  cveArmadora +")");
+		bitacora.debug("getArmadoraXID(" +  cveArmadora +")");
 		return this.armadoras.get(cveArmadora);
 	}
 
@@ -129,6 +146,20 @@ public class GestorDatosMemoria implements IGestorDatos{
 		if(this.armadoras.containsKey(armadora.getClave()) == false) 
 			return null;
 		return this.armadoras.put(armadora.getClave(), armadora);
+	}
+
+	@Override
+	public Armadora eliminarArmadora(String cveArmadora) {
+		if(this.armadoras.containsKey(cveArmadora) == false) 
+			return null;
+		return this.armadoras.remove(cveArmadora);
+	}
+
+	@Override
+	public ModeloAuto eliminarModeloAuto(String cveModelo) {
+		if(this.autos.containsKey(cveModelo) == false) 
+			return null;
+		return this.autos.remove(cveModelo);
 	}
 
 }

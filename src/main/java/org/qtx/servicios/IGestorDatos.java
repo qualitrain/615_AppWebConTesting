@@ -14,4 +14,7 @@ public interface IGestorDatos {
 	ModeloAuto insertarModeloAuto(ModeloAuto modelo);
 	Armadora getArmadoraConModelosXID(String cveArmadora);
 	Armadora actualizarArmadora(Armadora armadora);
+	Armadora eliminarArmadora(String cveArmadora);
+	ModeloAuto eliminarModeloAuto(String cveModelo);
+	ModeloAuto getModeloAutoXID(String cveModelo);
 }

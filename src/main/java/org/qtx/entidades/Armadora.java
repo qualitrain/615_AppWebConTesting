@@ -1,11 +1,8 @@
 package org.qtx.entidades;
 
-
 import java.util.Set;
 
-import javax.json.Json;
-import javax.json.JsonArrayBuilder;
-import javax.json.JsonObject;
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
@@ -14,17 +11,22 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
 @Entity
 public class Armadora {
+	private static Logger bitacora = LoggerFactory.getLogger(Armadora.class);
+
 	@Id
 	private String clave;
 	private String nombre;
 	private String paisOrigen;
 	private int nPlantas;
 	@XmlTransient
-	@OneToMany(mappedBy="armadora")
+	@OneToMany(mappedBy="armadora",cascade = CascadeType.PERSIST)
 	private Set<ModeloAuto> modelos;
 	
 	public Armadora(String clave, String nombre, String paisOrigen, int nPlantas) {
@@ -79,24 +81,24 @@ public class Armadora {
 		            + "<span style='font-weight: bold;'>N&iacute;umero de plantas:</span>" + this.nPlantas + "<br>";
 		return html;
 	}
-	public JsonObject toJson() {
-		JsonArrayBuilder builderArrModelos = Json.createArrayBuilder();
-		if(this.modelos != null) {
-			for(ModeloAuto modeloI : this.modelos) {
-				builderArrModelos.add(modeloI.toJson());
-			}
-		}
-		
-		return Json.createObjectBuilder()
-				       .add("clave", this.clave)
-		               .add("nombre", this.nombre)
-		               .add("paisOrigen", this.paisOrigen)
-		               .add("nPlantas", this.nPlantas)
-				       .add("modelos", builderArrModelos.build())
-			           .build();
-		
-	}
 	public boolean equivaleA(Armadora otraArmadora) {
+		
+		// Monitoreo modo DEBUG
+		
+		bitacora.debug(this.toString() + " equivaleA(" + otraArmadora + ")");
+		
+		if(otraArmadora == null)
+			return false;
+		
+		if(this.modelos != null)
+		   bitacora.debug(".equivaleA(..): n modelos de this:" + this.modelos.size() );
+		else
+		   bitacora.debug(".equivaleA(..): this NO tiene modelos asociados:");
+			
+		if(otraArmadora.tieneModelos())
+		   bitacora.debug(".equivaleA(..): n modelos de otraArmadora:" + otraArmadora.modelos.size() );
+		else
+		   bitacora.debug(".equivaleA(..): otraArmadora NO tiene modelos asociados:");
 
 		// Compara campo por campo
 		
@@ -109,25 +111,46 @@ public class Armadora {
 		if(this.nPlantas != otraArmadora.nPlantas)
 			return false;
 		
+		bitacora.debug(".equivaleA(..): armadoras equivalen campo a campo");
+		
 		// Compara los modelos anidados en la armadora
 		
-		//Caso que la primera armadora no tiene modelos
-		if(this.modelos == null) {
-			if(otraArmadora.modelos == null)
+		if(this.tieneModelos() == false) {
+			if(otraArmadora.tieneModelos() == false)
 				return true;
 			else
 				return false;
 		}
-		// Caso la segunda armadora no tiene modelos, pero la primera si
-		if(otraArmadora.modelos == null)
+		bitacora.debug(".equivaleA(..): this SI tiene modelos" );
+		
+		
+		// Caso la primera armadora tiene modelos, pero la segunda no
+		if(otraArmadora.tieneModelos() == false)
 			return false;
 		
+		//Ambas armadoras tienen modelos asociados		
 		if(this.modelos.size() != otraArmadora.modelos.size())
 			return false;
+		bitacora.debug(".equivaleA(..): Coinciden en cantidad de modelos asociados" );
 		
-		if(otraArmadora.modelos.containsAll(this.modelos))
-			return true;
+				
+		
+		if(this.modelos.containsAll(otraArmadora.modelos)) 
+			  return true;
+		 				
+		bitacora.debug(".equivaleA(..): No coinciden en los modelos asociados" );
+		bitacora.debug(".equivaleA(..): modelos this:" + this.modelos);
+		bitacora.debug(".equivaleA(..): modelos otraArmadora:" + otraArmadora.modelos );
+		
 		return false;
 	
+	}
+	
+	public boolean tieneModelos() {
+		if(this.modelos == null)
+			return false;
+		if(this.modelos.size() == 0)
+			return false;
+		return true;
 	}
 }

@@ -1,8 +1,7 @@
 package org.qtx.entidades;
 
-import javax.json.Json;
-import javax.json.JsonObject;
-import javax.json.JsonObjectBuilder;
+import java.util.Objects;
+
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
@@ -19,12 +18,13 @@ public class ModeloAuto {
 	@Id
 	private String claveModelo;
 	private String nombre;
+	private String version;
+	private boolean importado;
+	
 	@XmlTransient
 	@ManyToOne
 	@JoinColumn(name="claveArmadora")
 	private Armadora armadora;
-	private String version;
-	private boolean importado;
 	
 	public ModeloAuto(String claveModelo, String nombre, Armadora armadora, 
 			String version, boolean importado) {
@@ -82,20 +82,27 @@ public class ModeloAuto {
 
 	@Override
 	public String toString() {
-		String claveArmadora;
-		if(armadora == null)
-			claveArmadora = "Inexistente";
-		else
-			claveArmadora = armadora.getClave();
-		return "ModeloAuto [claveModelo=" + claveModelo + ", nombre=" + nombre + ", armadora=" + claveArmadora + ", version="
+		return "ModeloAuto [claveModelo=" + claveModelo + ", nombre=" + nombre + ", armadora=" + armadora.getClave() + ", version="
 				+ version + ", importado=" + importado + "]";
 	}
-	public JsonObject toJson() {
-		JsonObjectBuilder builderModeloAuto = Json.createObjectBuilder();
-		return builderModeloAuto.add("claveModelo", this.claveModelo)
-		                        .add("nombre", this.nombre)
-		                        .add("version", this.version)
-		                        .add("importado", this.importado)
-		                        .build();
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(armadora.getClave(), claveModelo, importado, nombre, version);
 	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		ModeloAuto other = (ModeloAuto) obj;
+		return Objects.equals(armadora.getClave(), other.armadora.getClave()) && Objects.equals(claveModelo, other.claveModelo)
+				&& importado == other.importado && Objects.equals(nombre, other.nombre)
+				&& Objects.equals(version, other.version);
+	}
+	
 }
