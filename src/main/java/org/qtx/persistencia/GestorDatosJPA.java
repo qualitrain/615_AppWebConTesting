@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import javax.annotation.PreDestroy;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityTransaction;
@@ -22,7 +21,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Repository;
 
-//@Primary
+@Primary
 @Repository
 public class GestorDatosJPA implements IGestorDatos {
 	@Autowired
@@ -119,17 +118,21 @@ public class GestorDatosJPA implements IGestorDatos {
 	}
 	@Override
 	public Armadora actualizarArmadora(Armadora armadora) {
+		bitacora.info("actualizarArmadora(" + armadora +")");
 		EntityManager em = null;
 		try {
 			em = this.fabricaEntityManager.createEntityManager();
 			EntityTransaction transaccion = em.getTransaction();
 			transaccion.begin();
+			bitacora.debug("actualizarArmadora:Antes de em.find");
 			Armadora armadoraAct = em.find(Armadora.class, armadora.getClave());
 			if(armadoraAct == null)
 				throw new Exception("La armadora no existe. Clave:" + armadora.getClave());
-			em.merge(armadora);
+			bitacora.debug("actualizarArmadora:Antes de em.merge(" + armadora +")");
+			armadoraAct = em.merge(armadora);
+			bitacora.debug("actualizarArmadora:armadoraAct:" + armadora);
 			transaccion.commit();
-			return armadora;
+			return armadoraAct;
 		}
 		catch(Exception ex)
 		{

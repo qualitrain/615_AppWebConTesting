@@ -2,4 +2,7 @@
 <configuration>
     <include resource="org/springframework/boot/logging/logback/base.xml" />
     <logger name="org.springframework" level="WARN"/>
+    <logger name="org.hibernate.SQL" level="WARN" />
+    <logger name="org.qtx.persistencia" level="INFO"/>
+    <logger name="org.qtx.servicios" level="INFO"/>
 </configuration>

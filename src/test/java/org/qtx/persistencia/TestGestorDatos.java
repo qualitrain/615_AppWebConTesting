@@ -1,5 +1,6 @@
 package org.qtx.persistencia;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -130,4 +131,36 @@ public class TestGestorDatos {
 		assertThrows( PersistenciaException.class, () -> gestorDatos.insertarArmadora(armadoraNva) );
 	}	
 
+	@Test
+	public void testActualizarArmadora_Plana() {
+		bitacora.info("testActualizarArmadora_Plana");
+		bitacora.info("IGestorDatos:" + this.gestorDatos.getClass().getName());
+		// Preparacion
+		gestorDatos.eliminarArmadora("Armadora03");
+		// Dados
+		Armadora armadoraNva = new Armadora("Armadora03", "Armadora Z SA de CV", "México", 0);
+		Armadora armadoraInsertada = gestorDatos.insertarArmadora(armadoraNva);
+		
+		armadoraNva.setNombre("Armadora modificada SA de CV");
+		armadoraNva.setnPlantas(1);
+		armadoraNva.setPaisOrigen("Uruguay");
+		
+		// Cuando
+		Armadora armadoraModificada = gestorDatos.actualizarArmadora(armadoraNva);
+		Armadora armadoraRecuperada = gestorDatos.getArmadoraXID(armadoraNva.getClave());
+		
+		// Entonces
+		
+		bitacora.info("armadoraInsertada = " + armadoraInsertada);
+		bitacora.info("armadoraModificada = " + armadoraModificada);
+		bitacora.info("armadoraRecuperada = " + armadoraRecuperada);
+		
+		assertThat(armadoraRecuperada.getClave()).isEqualTo(armadoraModificada.getClave());
+		assertThat(armadoraRecuperada.getNombre()).isEqualTo(armadoraModificada.getNombre());
+		assertThat(armadoraRecuperada.getnPlantas()).isEqualTo(armadoraModificada.getnPlantas());
+		assertThat(armadoraRecuperada.getPaisOrigen()).isEqualTo(armadoraModificada.getPaisOrigen());
+		
+	}
+
+	
 }

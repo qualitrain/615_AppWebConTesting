@@ -19,7 +19,7 @@ import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Repository;
 
 @Repository
-@Primary
+//@Primary
 public class GestorDatosRepositoryJPA implements IGestorDatos {
 	
 	@Autowired
@@ -106,8 +106,10 @@ public class GestorDatosRepositoryJPA implements IGestorDatos {
 
 	@Override
 	public Armadora actualizarArmadora(Armadora armadora) {
-		// TODO Auto-generated method stub
-		return null;
+		Optional<Armadora> optArmadora = this.repoArmadora.findById(armadora.getClave());
+		if(optArmadora.isEmpty())
+		   return null;
+		return this.repoArmadora.save(armadora);
 	}
 
 	@Override
