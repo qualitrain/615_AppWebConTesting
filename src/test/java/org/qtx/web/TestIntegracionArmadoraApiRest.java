@@ -169,7 +169,7 @@ class TestIntegracionArmadoraApiRest {
 		String idArmadora = "BMW";		
 		String RECURSO = URI_BASE_ARMADORAS + "/" + idArmadora ;
 		
-		bitacora.info("testGetArmadoraXID_JSonXML_SiExisteYenJson: Recurso= " + RECURSO );		
+		bitacora.debug("testGetArmadoraXID_JSonXML_SiExisteYenJson: Recurso= " + RECURSO );		
 		// Cuando
 		
 	    webClient.get().uri(RECURSO)
@@ -181,7 +181,7 @@ class TestIntegracionArmadoraApiRest {
 		         .expectBody()
 		             .jsonPath("$.clave").isEqualTo(idArmadora)
 		             .jsonPath("$.nombre").isNotEmpty()
-		         .consumeWith(resp -> bitacora.info("testGetArmadoraXID_JSonXML_SiExisteYenJson: response = " + resp));
+		         .consumeWith(resp -> bitacora.debug("testGetArmadoraXID_JSonXML_SiExisteYenJson: response = " + resp));
 				
 	}
 

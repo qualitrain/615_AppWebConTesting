@@ -2,8 +2,13 @@
 <configuration>
     <include resource="org/springframework/boot/logging/logback/base.xml" />
     <logger name="org.springframework" level="WARN"/>
+    <logger name="org.springframework.test" level="WARN"/>
+    <logger name="com.zaxxer" level="WARN" />
+    <logger name="org.hibernate" level="WARN" />
     <logger name="org.hibernate.SQL" level="WARN" />
-    <logger name="org.qtx.persistencia" level="INFO"/>
+    <logger name="org.apache.catalina" level="WARN" />
+    <logger name="org.springframework.boot.web" level="INFO" />
+    <logger name="org.qtx.persistencia" level="WARN"/>
     <logger name="org.qtx.servicios" level="INFO"/>
     <logger name="org.qtx.web" level="INFO"/>
 </configuration>
