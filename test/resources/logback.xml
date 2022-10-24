@@ -3,4 +3,5 @@
     <include resource="org/springframework/boot/logging/logback/base.xml" />
     <logger name="org.springframework" level="INFO"/>
     <logger name="org.qtx" level="INFO"/>
+    <logger name="org.qtx.persistencia.TestGestorDatos" level="DEBUG"/>
 </configuration>

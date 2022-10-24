@@ -12,7 +12,11 @@ import org.qtx.servicios.PersistenciaException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.context.TestConfiguration;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Primary;
 import org.springframework.test.context.TestPropertySource;
 
 import java.util.HashSet;
@@ -23,6 +27,8 @@ import java.util.Set;
 @TestPropertySource
 public class TestGestorDatos {
 	@Autowired
+//	@Qualifier("gestorDatosJPA") // Opcion A
+	@Qualifier("gestorDatosTest") // Opcion B
 	private IGestorDatos gestorDatos;
 	
 	private static Logger bitacora = LoggerFactory.getLogger(TestGestorDatos.class);
@@ -31,10 +37,18 @@ public class TestGestorDatos {
 		bitacora.info("TestgestorDatos()");
 	}
 	
+	@TestConfiguration
+	public static class ConfigTestGestorDatos{ // Opcion B, // Opcion C: ¿pruebas parametrizadas?
+		@Bean
+		public IGestorDatos gestorDatosTest() {
+			return new GestorDatosFake();
+		}
+	}
+	
 
 	@Test
 	public void testGetArmadoraXID() {
-		bitacora.debug("TestgestorDatos().testGetArmadoraXID()");
+		bitacora.debug("TestgestorDatos().testGetArmadoraXID() con " + this.gestorDatos.getClass().getName());
 
 		// Preparacion
 		gestorDatos.eliminarArmadora("TestArm");		
@@ -55,7 +69,7 @@ public class TestGestorDatos {
 	
 	@Test
 	public void testGetArmadoraXID_Inexistente_returnNull() {
-		bitacora.debug("TestgestorDatos().testGetArmadoraXID_Inexistente_returnNull()");
+		bitacora.debug("TestgestorDatos().testGetArmadoraXID_Inexistente_returnNull() con " + this.gestorDatos.getClass().getName());
 		
 		// Preparacion
 		gestorDatos.eliminarArmadora("XXXXX");
@@ -72,7 +86,7 @@ public class TestGestorDatos {
 	
 	@Test
 	public void testInsertarArmadora_Plana() {
-		bitacora.debug("TestgestorDatos().testInsertarArmadora_Plana()");
+		bitacora.debug("TestgestorDatos().testInsertarArmadora_Plana() con " + this.gestorDatos.getClass().getName());
 		
 		// Preparacion
 		gestorDatos.eliminarArmadora("NvaArma");
@@ -91,7 +105,7 @@ public class TestGestorDatos {
 	
 	@Test
 	public void testInsertarArmadora_ConModelos() {
-		bitacora.debug("TestgestorDatos().testInsertarArmadora_ConModelos()");
+		bitacora.debug("TestgestorDatos().testInsertarArmadora_ConModelos() con " + this.gestorDatos.getClass().getName());
 		
 		// Preparacion
 		gestorDatos.eliminarModeloAuto("F-45");
@@ -118,7 +132,7 @@ public class TestGestorDatos {
 	
 	@Test
 	public void testInsertarArmadora_Duplicada() {
-		bitacora.debug("TestgestorDatos().testInsertarArmadora_Duplicada()");
+		bitacora.debug("TestgestorDatos().testInsertarArmadora_Duplicada() con " + this.gestorDatos.getClass().getName());
 		
 		// Preparacion
 		gestorDatos.eliminarArmadora("Armadora02");
