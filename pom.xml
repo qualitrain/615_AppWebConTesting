@@ -63,7 +63,16 @@
 			<artifactId>javax.json</artifactId>
 			<version>1.1.2</version>
 		</dependency>
-	</dependencies>
+        <dependency>
+             <groupId>com.fasterxml.jackson.dataformat</groupId>
+             <artifactId>jackson-dataformat-xml</artifactId>
+        </dependency>
+		<dependency>
+		  <groupId>com.fasterxml.jackson.module</groupId>
+		  <artifactId>jackson-module-jaxb-annotations</artifactId>
+<!-- 		  <version>2.10.2</version> -->
+		</dependency>
+ 	</dependencies>
 
 	<build>
 		<plugins>

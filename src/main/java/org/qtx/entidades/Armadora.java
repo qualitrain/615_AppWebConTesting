@@ -17,7 +17,9 @@ import javax.xml.bind.annotation.XmlTransient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-@XmlRootElement
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
+@XmlRootElement(name="armadora")
 @XmlAccessorType(XmlAccessType.FIELD)
 @Entity
 public class Armadora {
@@ -28,6 +30,7 @@ public class Armadora {
 	private String nombre;
 	private String paisOrigen;
 	private int nPlantas;
+	@JsonIgnore
 	@XmlTransient
 	@OneToMany(mappedBy="armadora",cascade = CascadeType.PERSIST)
 	private Set<ModeloAuto> modelos;

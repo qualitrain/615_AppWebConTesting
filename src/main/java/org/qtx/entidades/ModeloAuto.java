@@ -14,6 +14,8 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @XmlRootElement(name="modelo")
 @XmlAccessorType(XmlAccessType.FIELD)
 @Entity
@@ -24,6 +26,7 @@ public class ModeloAuto {
 	private String version;
 	private boolean importado;
 	
+	@JsonIgnore
 	@XmlTransient
 	@ManyToOne
 	@JoinColumn(name="claveArmadora")
