@@ -31,15 +31,7 @@ public class ArmadoraApiController {
 	public ArmadoraApiController() {
 		bitacora.info("ArmadoraApiController()");		
 	}
-	
-//	@PostConstruct
-//	public void configurarProcesamientoAnotacionesJaxB() {
-//		bitacora.info("configurarProcesamientoAnotacionesJaxB()");		
-//		JaxbAnnotationModule module = new JaxbAnnotationModule();
-//		
-//		this.mapeadorXml.registerModule(module);
-//	}
-	
+		
 	@GetMapping(path = "/armadoras", produces =MediaType.TEXT_PLAIN_VALUE)
 	public String getArmadoras(){
 		bitacora.info("getArmadoras()");		
