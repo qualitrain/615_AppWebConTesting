@@ -20,7 +20,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-
 @RestController
 public class ArmadoraApiController {
 	@Autowired
@@ -57,6 +56,7 @@ public class ArmadoraApiController {
 	public Armadora getArmadoraXID_JSonXML(
 			@PathVariable(name = "cve")
 			String cveArmadora) {
+		bitacora.debug("getArmadoraXID_JSonXML(" + cveArmadora 	+ ")");	
 		return this.servicioArmadoras.getArmadoraXID(cveArmadora);
 	}
 
@@ -103,16 +103,18 @@ public class ArmadoraApiController {
         {
 		bitacora.debug("insertarArmadora form-url-encoded");
 		Armadora nvaArmadora = new Armadora(clave,nombre,pais,nPlantas);
-		bitacora.debug(nvaArmadora.toString());
-		return this.servicioArmadoras.insertarArmadora(nvaArmadora)
-				                     .toString();
+		bitacora.debug("armadora por insertar:" + nvaArmadora.toString());
+		Armadora armadoraInsertada = this.servicioArmadoras.insertarArmadora(nvaArmadora);
+		bitacora.debug("armadoraInsertada:" + armadoraInsertada.toString());
+		return armadoraInsertada.toString();
 	}
 
 	@PostMapping(path = "/armadoras", produces=MediaType.TEXT_PLAIN_VALUE + "; charset=ISO-8859-1", 
             consumes = MediaType.APPLICATION_JSON_VALUE)
 	public String insertarArmadora_Json(@RequestBody Armadora nvaArmadora){
 		bitacora.debug("insertarArmadora Json");
-		bitacora.debug(nvaArmadora.toString());
+		bitacora.debug("Armadora por insertar:" + nvaArmadora.toString());
+		bitacora.debug("Hash armadora por insertar:" + nvaArmadora.hashCode());
 		return this.servicioArmadoras.insertarArmadora(nvaArmadora)
                     .toString();		
 	}
