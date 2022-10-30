@@ -27,8 +27,8 @@ import java.util.Set;
 @TestPropertySource
 public class TestGestorDatos {
 	@Autowired
-//	@Qualifier("gestorDatosJPA") // Opcion A
-	@Qualifier("gestorDatosTest") // Opcion B
+	@Qualifier("gestorDatosJPA") // Opcion A
+//	@Qualifier("gestorDatosTest") // Opcion B
 	private IGestorDatos gestorDatos;
 	
 	private static Logger bitacora = LoggerFactory.getLogger(TestGestorDatos.class);
