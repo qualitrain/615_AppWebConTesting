@@ -4,7 +4,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assumptions.assumeTrue;
 
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.qtx.entidades.Armadora;
 import org.qtx.entidades.ModeloAuto;
@@ -17,6 +19,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.HashSet;
 import java.util.Set;
+
+import javax.transaction.Transactional;
 
 @SpringBootTest
 public class TestGestorDatos {
@@ -31,11 +35,15 @@ public class TestGestorDatos {
 	
 
 	@Test
+	@Transactional
+	@DisplayName(value = "Test Get Armadora X ID usando contexto transaccional")
 	public void testGetArmadoraXID() {
 		bitacora.debug("TestgestorDatos().testGetArmadoraXID()");
 
 		// Preparacion
-		gestorDatos.eliminarArmadora("TestArm");		
+		assumeTrue(this.gestorDatos != null);
+		if(this.gestorDatos.getArmadoraXID("TestArm")!=null)
+			gestorDatos.eliminarArmadora("TestArm");		
 		
 		// Dados
 		Armadora armadora = new Armadora("TestArm","ArmTest AG","Alemania",2);
@@ -52,11 +60,15 @@ public class TestGestorDatos {
 	}
 	
 	@Test
+	@Transactional
 	public void testGetArmadoraXID_Inexistente_returnNull() {
 		bitacora.debug("TestgestorDatos().testGetArmadoraXID_Inexistente_returnNull()");
 		
 		// Preparacion
-		gestorDatos.eliminarArmadora("XXXXX");
+		assumeTrue(this.gestorDatos != null);
+		
+		if(gestorDatos.getArmadoraXID("XXXXX") != null)
+			gestorDatos.eliminarArmadora("XXXXX");
 		
 		// Dados
 		String cveArmadoraInexistente = "XXXXX";
@@ -69,11 +81,14 @@ public class TestGestorDatos {
 	}
 	
 	@Test
+	@Transactional
 	public void testInsertarArmadora_Plana() {
 		bitacora.debug("TestgestorDatos().testInsertarArmadora_Plana()");
 		
 		// Preparacion
-		gestorDatos.eliminarArmadora("NvaArma");
+		assumeTrue(this.gestorDatos != null);
+		if(this.gestorDatos.getArmadoraXID("NvaArma") != null)
+			this.gestorDatos.eliminarArmadora("NvaArma");
 		
 		// Dados
 		Armadora armadoraNva = new Armadora("NvaArma","Armadora Mexicana SA de CV","Brasil",0);
@@ -88,14 +103,24 @@ public class TestGestorDatos {
 	}
 	
 	@Test
+	@Transactional
 	public void testInsertarArmadora_ConModelos() {
 		bitacora.debug("TestgestorDatos().testInsertarArmadora_ConModelos()");
 		
 		// Preparacion
-		gestorDatos.eliminarModeloAuto("F-45");
-		gestorDatos.eliminarModeloAuto("F-49");
-		gestorDatos.eliminarModeloAuto("F-55");
-		gestorDatos.eliminarArmadora("Armadora");
+		assumeTrue(this.gestorDatos != null);
+		
+		if(this.gestorDatos.getModeloAutoXID("F-45")!=null)
+			this.gestorDatos.eliminarModeloAuto("F-45");
+		
+		if(this.gestorDatos.getModeloAutoXID("F-49")!=null)
+			this.gestorDatos.eliminarModeloAuto("F-49");
+		
+		if(this.gestorDatos.getModeloAutoXID("F-55")!=null)
+			this.gestorDatos.eliminarModeloAuto("F-55");
+		
+		if(this.gestorDatos.getArmadoraXID("Armadora")!=null)
+			gestorDatos.eliminarArmadora("Armadora");
 		
 		// Dados
 		Armadora armadoraNva = new Armadora("Armadora","Armadora Agrupada SA de CV","Brasil",0);
@@ -115,11 +140,14 @@ public class TestGestorDatos {
 	}
 	
 	@Test
+	@Transactional
 	public void testInsertarArmadora_Duplicada() {
 		bitacora.debug("TestgestorDatos().testInsertarArmadora_Duplicada()");
 		
 		// Preparacion
-		gestorDatos.eliminarArmadora("Armadora02");
+		assumeTrue(this.gestorDatos != null);
+		if(this.gestorDatos.getArmadoraXID("Armadora02")!=null)
+			this.gestorDatos.eliminarArmadora("Armadora02");
 		
 		// Dados
 		Armadora armadoraNva = new Armadora("Armadora02", "Armadora X SA de CV", "México", 1);
@@ -132,11 +160,15 @@ public class TestGestorDatos {
 	}	
 
 	@Test
+	@Transactional
 	public void testActualizarArmadora_Plana() {
 		bitacora.info("testActualizarArmadora_Plana");
 		bitacora.info("IGestorDatos:" + this.gestorDatos.getClass().getName());
 		// Preparacion
-		gestorDatos.eliminarArmadora("Armadora03");
+		assumeTrue(this.gestorDatos != null);
+		if(this.gestorDatos.getArmadoraXID("Armadora03")!=null)
+			this.gestorDatos.eliminarArmadora("Armadora03");
+		
 		// Dados
 		Armadora armadoraNva = new Armadora("Armadora03", "Armadora Z SA de CV", "México", 0);
 		Armadora armadoraInsertada = gestorDatos.insertarArmadora(armadoraNva);

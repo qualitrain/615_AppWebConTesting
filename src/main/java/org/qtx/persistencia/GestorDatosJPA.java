@@ -9,6 +9,7 @@ import java.util.Set;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityTransaction;
+import javax.persistence.PersistenceContext;
 
 import org.qtx.entidades.Armadora;
 import org.qtx.entidades.ModeloAuto;
@@ -20,15 +21,19 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
-//@Primary
+@Primary
 @Repository
 public class GestorDatosJPA implements IGestorDatos {
-	@Autowired
-	private EntityManagerFactory fabricaEntityManager;
+//	@Autowired
+//	private EntityManagerFactory fabricaEntityManager;
 	
 	private static Logger bitacora = LoggerFactory.getLogger(GestorDatosJPA.class);
 
+	@PersistenceContext
+	private EntityManager em;
+	
 	public GestorDatosJPA() {
 		bitacora.info("GestorDatosJPA()");
 	}
@@ -37,39 +42,40 @@ public class GestorDatosJPA implements IGestorDatos {
 	public Armadora getArmadoraXID(String cveArmadora) {
 		bitacora.debug("getArmadoraXID(" +  cveArmadora +")");
 		
-		EntityManager em = fabricaEntityManager.createEntityManager();
+//		EntityManager em = fabricaEntityManager.createEntityManager();
 	    Armadora unaArmadora = em.find(Armadora.class, cveArmadora);
-	    em.close();
+//	    em.close();
 		return unaArmadora;
 	}
 	@Override
 	public ModeloAuto getModeloAutoXID(String cveModelo) {
 		bitacora.debug("getModeloAutoXID(" +  cveModelo +")");
 		
-		EntityManager em = fabricaEntityManager.createEntityManager();
+//		EntityManager em = fabricaEntityManager.createEntityManager();
 	    ModeloAuto unaAuto = em.find(ModeloAuto.class, cveModelo);
-	    em.close();
+//	    em.close();
 		return unaAuto;
 	}
 	@Override
 	public Armadora getArmadoraConModelosXID(String cveArmadora) {
-		EntityManager em = fabricaEntityManager.createEntityManager();
+//		EntityManager em = fabricaEntityManager.createEntityManager();
 	    Armadora unaArmadora = em.find(Armadora.class, cveArmadora);
 	    if(unaArmadora == null)
 	    	return null;
-	    unaArmadora.getModelos().size();
-	    em.close();
+	    if(unaArmadora.getModelos()!=null)
+	    	unaArmadora.getModelos().size();
+//	    em.close();
 		return unaArmadora;
 	}
 
 	@Override
 	public Set<Armadora> getArmadorasTodas() {
 		String consulta = "SELECT a FROM Armadora a";
-		EntityManager em = fabricaEntityManager.createEntityManager();
+//		EntityManager em = fabricaEntityManager.createEntityManager();
 		@SuppressWarnings("unchecked")
 		List<Armadora> listArmadoras = (List<Armadora>) em.createQuery(consulta)
 													.getResultList();
-	    em.close();
+//	    em.close();
 	    return new HashSet<Armadora>(listArmadoras);		
 	}
 
@@ -84,19 +90,33 @@ public class GestorDatosJPA implements IGestorDatos {
 	}
 
 	@Override
+	@Transactional
 	public Armadora insertarArmadora(Armadora armadora) {
 		bitacora.debug("insertarArmadora(" +  armadora +")");
+		Armadora armadoraPreexistente = this.getArmadoraXID(armadora.getClave());
+		if(this.getArmadoraXID(armadora.getClave())!=null) { //Ya existe
+			Map<String,String> detEx = new HashMap<String, String>();
+			detEx.put("msg", "Llave duplicada [" + armadoraPreexistente
+					+ "] al intentar insertar armadora ");
+			detEx.put("tabla", "armadora en memoria");
+			detEx.put("ubicacion", this.getClass().getSimpleName() 
+					+ ".insertarArmadora("
+					+ armadora
+					+ ")");
+			PersistenciaException pex = ManejadorErrPersistencia.crearEx(detEx, null);
+			throw pex;								
+		}
 		if(armadora.tieneModelos()) {
 			bitacora.debug("insertarArmadora(..): Tiene modelos anidados (" + armadora.getModelos());			
 		}
 		
-		EntityManager em = null;
+//		EntityManager em = null;
 		try {
-			em = this.fabricaEntityManager.createEntityManager();
-			EntityTransaction transaccion = em.getTransaction();
-			transaccion.begin();
+//			em = this.fabricaEntityManager.createEntityManager();
+//			EntityTransaction transaccion = em.getTransaction();
+//			transaccion.begin();
 			em.persist(armadora);
-			transaccion.commit();
+//			transaccion.commit();
 			return armadora;
 		}
 		catch(Exception ex)
@@ -111,19 +131,20 @@ public class GestorDatosJPA implements IGestorDatos {
 			PersistenciaException pex = ManejadorErrPersistencia.crearEx(detEx, ex);
 			throw pex;
 		}
-		finally {
-			if(em != null)
-				em.close();
-		}
+//		finally {
+//			if(em != null)
+//				em.close();
+//		}
 	}
 	@Override
+	@Transactional
 	public Armadora actualizarArmadora(Armadora armadora) {
 		bitacora.info("actualizarArmadora(" + armadora +")");
-		EntityManager em = null;
+//		EntityManager em = null;
 		try {
-			em = this.fabricaEntityManager.createEntityManager();
-			EntityTransaction transaccion = em.getTransaction();
-			transaccion.begin();
+//			em = this.fabricaEntityManager.createEntityManager();
+//			EntityTransaction transaccion = em.getTransaction();
+//			transaccion.begin();
 			bitacora.debug("actualizarArmadora:Antes de em.find");
 			Armadora armadoraAct = em.find(Armadora.class, armadora.getClave());
 			if(armadoraAct == null)
@@ -131,7 +152,7 @@ public class GestorDatosJPA implements IGestorDatos {
 			bitacora.debug("actualizarArmadora:Antes de em.merge(" + armadora +")");
 			armadoraAct = em.merge(armadora);
 			bitacora.debug("actualizarArmadora:armadoraAct:" + armadora);
-			transaccion.commit();
+//			transaccion.commit();
 			return armadoraAct;
 		}
 		catch(Exception ex)
@@ -146,19 +167,20 @@ public class GestorDatosJPA implements IGestorDatos {
 			PersistenciaException pex = ManejadorErrPersistencia.crearEx(detEx, ex);
 			throw pex;
 		}
-		finally {
-			if(em != null)
-				em.close();
-		}
+//		finally {
+//			if(em != null)
+//				em.close();
+//		}
 	}
+	@Transactional
 	public ModeloAuto insertarModeloAuto(ModeloAuto modelo) {
-		EntityManager em = null;
+//		EntityManager em = null;
 		try {
-			em = this.fabricaEntityManager.createEntityManager();
-			EntityTransaction transaccion = em.getTransaction();
-			transaccion.begin();
+//			em = this.fabricaEntityManager.createEntityManager();
+//			EntityTransaction transaccion = em.getTransaction();
+//			transaccion.begin();
 			em.persist(modelo);
-			transaccion.commit();
+//			transaccion.commit();
 			return modelo;
 		}
 		catch(Exception ex)
@@ -173,24 +195,25 @@ public class GestorDatosJPA implements IGestorDatos {
 			PersistenciaException pex = ManejadorErrPersistencia.crearEx(detEx, ex);
 			throw pex;
 		}
-		finally {
-			if(em != null)
-				em.close();
-		}
+//		finally {
+//			if(em != null)
+//				em.close();
+//		}
 	}
 
 	@Override
+	@Transactional
 	public Armadora eliminarArmadora(String cveArmadora) {
-		EntityManager em = null;
+//		EntityManager em = null;
 		try {
-			em = this.fabricaEntityManager.createEntityManager();
+//			em = this.fabricaEntityManager.createEntityManager();
 			EntityTransaction transaccion = em.getTransaction();
-			transaccion.begin();
+//			transaccion.begin();
 			Armadora armadoraAct = em.find(Armadora.class, cveArmadora);
 			if(armadoraAct == null)
 				return null;
 			em.remove(armadoraAct);
-			transaccion.commit();
+//			transaccion.commit();
 			return armadoraAct;
 		}
 		catch(Exception ex)
@@ -205,24 +228,24 @@ public class GestorDatosJPA implements IGestorDatos {
 			PersistenciaException pex = ManejadorErrPersistencia.crearEx(detEx, ex);
 			throw pex;
 		}
-		finally {
-			if(em != null)
-				em.close();
-		}
+//		finally {
+//			if(em != null)
+//				em.close();
+//		}
 	}
 
 	@Override
 	public ModeloAuto eliminarModeloAuto(String cveModelo) {
-		EntityManager em = null;
+//		EntityManager em = null;
 		try {
-			em = this.fabricaEntityManager.createEntityManager();
-			EntityTransaction transaccion = em.getTransaction();
-			transaccion.begin();
+//			em = this.fabricaEntityManager.createEntityManager();
+//			EntityTransaction transaccion = em.getTransaction();
+//			transaccion.begin();
 			ModeloAuto autoAct = em.find(ModeloAuto.class, cveModelo);
 			if(autoAct == null)
 				return null;
 			em.remove(autoAct);
-			transaccion.commit();
+//			transaccion.commit();
 			return autoAct;
 		}
 		catch(Exception ex)
@@ -237,10 +260,10 @@ public class GestorDatosJPA implements IGestorDatos {
 			PersistenciaException pex = ManejadorErrPersistencia.crearEx(detEx, ex);
 			throw pex;
 		}
-		finally {
-			if(em != null)
-				em.close();
-		}
+//		finally {
+//			if(em != null)
+//				em.close();
+//		}
 	}
 	
 }
