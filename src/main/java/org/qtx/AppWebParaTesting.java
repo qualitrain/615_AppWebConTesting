@@ -18,7 +18,7 @@ public class AppWebParaTesting {
 		SpringApplication.run(AppWebParaTesting.class, args);
 	}
 	
-	@Bean
+	@Bean(name = "transactionManager")
 	public JpaTransactionManager getGestorTransacciones( EntityManagerFactory emf) {
 		bitacora.debug("getGestorTransacciones()");
 		return new JpaTransactionManager(emf);

@@ -23,7 +23,7 @@ import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
-@Primary
+//@Primary
 @Repository
 public class GestorDatosJPA implements IGestorDatos {
 //	@Autowired
